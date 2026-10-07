@@ -18,6 +18,36 @@ This public repository is a documentation-only product showcase. Application sou
 
 A quota-free sample card makes the experience explorable before using the AI service. The refreshed interface uses the open-source Plus Jakarta Sans typeface.
 
+## Architecture
+
+```mermaid
+flowchart TD
+    UI["Learning interface<br/>React + TanStack Start on Lovable"]
+    Local["Browser sample card<br/>and interactive quiz"]
+    Bridge["TanStack server bridge<br/>Validate and forward requests"]
+    Backend["Google Apps Script<br/>Shared quota and request handling"]
+    Workflow["Activepieces workflow<br/>Explainer → Critic → Rewrite"]
+    Model["Gemini"]
+    Sheets["Google Sheets"]
+
+    UI --> Local
+    UI <-->|Generation, status and feedback| Bridge
+    Bridge <-->|Authenticated server requests| Backend
+    Backend <-->|Generate learning card| Workflow
+    Workflow <-->|Generate, review and rewrite| Model
+    Workflow -->|Request, output and review logs| Sheets
+    Backend -->|Feedback records| Sheets
+
+    classDef frontend fill:#f0f2ff,stroke:#6366f1,color:#172033
+    classDef service fill:#f7f8fa,stroke:#94a3b8,color:#172033
+    classDef storage fill:#e7f4ef,stroke:#4a8b74,color:#172033
+    class UI,Local frontend
+    class Bridge,Backend,Workflow,Model service
+    class Sheets storage
+```
+
+The sample card and quiz interactions run in the browser without model calls. Generated explanations pass through the server bridge; Apps Script enforces the shared allowance and saves feedback. The retained Activepieces workflow is documented as coordinating the three AI stages and writing request, output, and review logs to Google Sheets.
+
 ## Product thinking
 
 - [Product brief](docs/PRODUCT.md)
